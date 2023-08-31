@@ -1,0 +1,18 @@
+We had similar requirement to on-board new vendors without modifying or redeploying the process.
+
+Presently the number of vendors is <50.
+
+ 
+
+We defined a CRT with an arbitrary column ID in it. The values for these column contains ID1, ID2, ID3....
+
+In Boomi process, we defined a message shape like below: (we defined ID1 - ID500 so it can handle upto 500 vendors - which is in our case, a far higher number)
+
+ 
+
+After that we using map share to do the CRT lookup and getting Vendor details (vendor name, folder etc).
+
+Then we are doing dataprocess --> Split to split the rows. In decision shape, we checking whether vendorname/folder is not empty. If it is not empty, we are using flow control to process each vendor.
+
+ 
+
