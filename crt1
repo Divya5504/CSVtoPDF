@@ -1,0 +1,87 @@
+How to process cross reference table in sequential order without any input parameter provided for the same.
+Working on an integration which transfers file from one drive and move them to another drive on the same system. And local atom is mounted on the same system.
+
+ 
+
+Transfer of files is rule driven. Rule defines the source directory, destination directory, type of file, time to live(minimum time after which file should be picked up from the source), backup directory etc.
+
+All these rules are defined with the help of Cross Reference Table.
+
+ 
+
+Cross Reference Table - Rules
+
+ 
+
+ 
+
+ 
+
+ 
+
+Each time the interface executes, all the rows of the cross reference table should be read and transfer of file should happen for the files which satisfies the rule criteria.
+
+ 
+
+In current design I am using a Process Property, which contains all the unique rule ids comma separated and with rule id as input parameter I am picking the entire row corresponding to that rule id and processing each row one by one with the help of flow control.
+
+ 
+
+As per the requirement, all the details can be stored on in cross reference table and process property cannot be used for the same.
+
+ 
+
+Another requirement is to store Last Run Date separately corresponding to each Rule Id.
+
+ 
+
+If anyone have any alternative idea on how the same can be achieved, it would be of great help. Thanks in advance.
+
+ 
+
+Current Design:
+
+Current Design - Rule based File Transfer
+
+Process Property:
+
+Rule Ids stored in Process Property
+
+ 
+
+Message Shape:
+
+message shape
+
+How-To
+Share
+10 answers
+2.76K views
+
+Harikrishna Bonala (Customer)
+
+4 years ago
+Hi,
+
+ 
+
+We had similar requirement to on-board new vendors without modifying or redeploying the process.
+
+Presently the number of vendors is <50.
+
+ 
+
+We defined a CRT with an arbitrary column ID in it. The values for these column contains ID1, ID2, ID3....
+
+In Boomi process, we defined a message shape like below: (we defined ID1 - ID500 so it can handle upto 500 vendors - which is in our case, a far higher number)
+
+ 
+
+After that we using map share to do the CRT lookup and getting Vendor details (vendor name, folder etc).
+
+Then we are doing dataprocess --> Split to split the rows. In decision shape, we checking whether vendorname/folder is not empty. If it is not empty, we are using flow control to process each vendor.
+
+ 
+
+
+
