@@ -1,0 +1,13 @@
+I've always wanted to tackle this kind of CRT problem but never had a project that required it... until now!
+
+This approach requires no message shape with numbers, no api calls, no Process Properties and no scripting.
+
+DPP-Counter: initialise to 1
+Dump DPP-Counter: put DPP-Counter into context (e.g. output will be 1)
+Map
+Does the CRT lookup based on the value from the message shape
+Increments DPP Counter (see https://community.boomi.com/s/question/0D51W00006As1GMSAZ/increment-of-dynamic-process-property-value)
+CRT Index set: Checks that the output from the map includes a value from the CRT
+True path: Loops back, resulting in the message shape outputting 2
+False path: the lookup couldn't find a value for the latest index, so stops.
+Process
