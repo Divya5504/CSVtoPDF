@@ -1,0 +1,96 @@
+Boomi is able to convert a date/time from one format to another within a map if both profiles have the Data Type set to Date/Time and the correct Date Format is set.
+Yet sometimes the incoming data can have multiple possible date formats. This article covers how to work with multiple possible date stamps.
+
+This can be challenging because Boomi requires a specific Date Format to be set. One way to correct for this is to set the Data Type on the 
+incoming profile to character and within a map add a User Defined Map Function. Within the Map Function add a Custom Script for JavaScript and then a Date Format. 
+The JavaScript will test the incoming data with a regular expression against known date formats. If the regular expression matches against the incoming data,
+then that date format will be used within the Date Format function and only then will the date be passed to the destination profile within the map.
+Figure 1. User Defined Map Function.
+
+ 
+The Date Format function will have the Input Mask default to MMddyyyy. Do no worry about this because the script will input the mask that will be used. The Output Mask needs to be setup to use Boomi’s internal date format, which is yyyyMMdd HHmmss.SSS.
+
+ 
+Figure 2. Date Format function.
+
+Figure 2. Date Format function.
+
+ 
+This script covers the following possible Date Format. The variable date formats sometimes happen because of the milliseconds and will be the only aspect that this article reviews, but the basic concept can be applied to any field that contains a variable date format.
+
+ 
+Table 1. Date Formats used within the script.
+
+Date Format	Regular Expression Used in Script
+yyyy-MM-dd'T'HH:mm:ss’Z’
+/^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2})Z$/
+yyyy-MM-dd'T'HH:mm:ss.SS’Z’
+/^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{2})Z$/
+yyyy-MM-dd'T'HH:mm:ss.SSS’Z’
+/^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3})Z$/
+yyyy-MM-dd'T'HH:mm:ssZ
+/^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}-\d{4})$/
+yyyy-MM-dd'T'HH:mm:ss.SSSZ
+/^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}-\d{4})$/
+yyyy-MM-dd'T'HH:mm:ssZZ
+/^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}-\d{2}:\d{2})$/
+yyyy-MM-dd'T'HH:mm:ss.SSSZZ
+/^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}-\d{2}:\d{2})$/
+yyyyMMdd HHmmss
+/^(\d{8}\s{1}\d{6})$/
+yyyyMMdd HHmmss.SSS
+/^(\d{8}\s{1}\d{6}.\d{3})$/
+ 
+Below is the scrip used within the user defined map function. The input is date_in set to character and the output is date_out and date_mask. Feel free to modify the script to only include the date formats that you need to evaluate for. The script below is meant to show a concept, but is likely more encompassing than is needed in most situations.
+
+var date_exp_1 = /^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2})Z$/;
+var date_reg_1 = new RegExp(date_exp_1);
+var date_exp_2 = /^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{2})Z$/;
+var date_reg_2 = new RegExp(date_exp_2);
+var date_exp_3 = /^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3})Z$/;
+var date_reg_3 = new RegExp(date_exp_3);
+var date_exp_4 = /^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}-\d{4})$/;
+var date_reg_4 = new RegExp(date_exp_4);
+var date_exp_5 = /^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}-\d{4})$/;
+var date_reg_5 = new RegExp(date_exp_5);
+var date_exp_6 = /^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}-\d{2}:\d{2})$/;
+var date_reg_6 = new RegExp(date_exp_6);
+var date_exp_7 = /^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}-\d{2}:\d{2})$/;
+var date_reg_7 = new RegExp(date_exp_7);
+var date_exp_8 = /^(\d{8}\s{1}\d{6})$/;
+var date_reg_8 = new RegExp(date_exp_8);
+var date_exp_9 = /^(\d{8}\s{1}\d{6}.\d{3})$/;
+var date_reg_9 = new RegExp(date_exp_9);
+
+// No date will be passed if the data does not match one of the prescribed date formats.
+
+if (date_reg_1.test(date_in)) {
+    date_out = date_in;
+    date_mask = "yyyy-MM-dd'T'HH:mm:ss'Z'";
+} else if (date_reg_2.test(date_in)) {
+    date_out = date_in;
+    date_mask = "yyyy-MM-dd'T'HH:mm:ss.SS'Z'";
+} else if (date_reg_3.test(date_in)) {
+    date_out = date_in;
+    date_mask = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+} else if (date_reg_4.test(date_in)) {
+    date_out = date_in;
+    date_mask = "yyyy-MM-dd'T'HH:mm:ssZ";
+} else if (date_reg_5.test(date_in)) {
+    date_out = date_in;
+    date_mask = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
+} else if (date_reg_6.test(date_in)) {
+    date_out = date_in;
+    date_mask = "yyyy-MM-dd'T'HH:mm:ssZZ";
+} else if (date_reg_7.test(date_in)) {
+    date_out = date_in;
+    date_mask = "yyyy-MM-dd'T'HH:mm:ss.SSSZZ";
+} else if (date_reg_8.test(date_in)) {
+    date_out = date_in;
+    date_mask = "yyyyMMdd HHmmss";
+} else if (date_reg_9.test(date_in)) {
+    date_out = date_in;
+    date_mask = "yyyyMMdd HHmmss.SSS";
+}
+
+ 
