@@ -1,0 +1,90 @@
+Date/Time Formatting
+
+When moving data from the source to a destination, you need to ensure that the field formatted correctly, not only on the destination end, but also your source. Should your source profile be defined as a character type, you can add a "Date Format" function within your map, which will take your Input Date String and format it based on an Input Mask and Output Mask:
+
+0EM40000000N3OR
+
+For other information about date/time formatting and syntax, please view Date/Time data type.
+
+When you use date/time data type in a profile, you'll see there are preset formats like MMyyyydd and many others. The date/time formatting is used in map functions and properties as well. If you use more symbols than there are digits, it will be formatted appropriately:
+ 
+d is day in month, 1-31. If you use d and it is the 7th, the result will be 7; dd and day is 7, result will be 07
+D is day in year, 1-365 (or 366). If you use D and it is the 9th day of the year, the result will be 9; DD and it is the 9th day of the year, result will be 09; DDD will be 009
+Note: while you can use as many symbols as you want e.g. dddd, but it wouldn't make sense since you'll produce 0031. If there's no specific purpose for it, there's no need to use more than what's necessary.
+
+This is the full table of date/time formatting available:
+ 
+Symbol	Meaning	Example	Symbol	Meaning	Example
+G	Era designator	AD or BC	w	Week in year	27
+y	Year	1996	W	Week in month	2
+M	Month in year	July & 07	a	AM/PM marker	PM
+d	Day in month	10	k	Hour in day (1~24)	24
+h	Hour in am/pm	12	K	Hour in AM/PM (0~11)	4
+H	Hour in day (0~23)N	0	z	Current time zone	PDT
+m	Minute in hour	30	Z	Time zone offset from UTC	-0500
+s	Second in minute	55	ZZ	Time zone offset from UTC	-05:00
+S	Millisecond	978	'Z'	Converts to UTC time (UTC-0:00)	<date time value>Z
+E	Day in week	Tuesday	'	Escape for text	 
+D	Day in year	189	''	Those are two single quotes, it makes a single quote	'
+F	Day of week in month	2 (2nd Wed in July)	 	 	 
+
+Common Date formats:
+ 
+Format	Description	Example
+d	Day in month, from 1 through 31	1, 15, 31
+dd	Day in month formatted to two digits, from 01 through 31	01, 15, 31
+D	Day in year; if D is 7 then DD, DDD makes 07 and 007	182, 24
+M	The month number of the year, from 1 through 12	1, 8, 12
+MM	The month number of the year formatted to two digits, from 01 through 12	01, 08, 12
+MMM	The month name, formatted to three letters, from Jan through Dec;
+MMMM will spell out the full name for longer months, January, August	Jan, Aug, Dec
+yy	The year, formatted to two digits, from 00 through 99	99, 01, 15
+yyyy	The year, formatted to four digits, from 0001 through 9999	1999, 2001, 2015
+
+Note: sometimes D is mistaken for d so the output date will look different than expected
+
+Common Time formats:
+ 
+Format	Description	Example
+SSS	Millisecond, formatted to three digits, from 000 through 999	005, 135, 865
+s	Seconds, from 0 through 59	1, 30, 59
+ss	Seconds, formatted to two digits, from 00 through 59	01, 30, 59
+m	Minutes, from 0 through 59	0, 14, 57
+mm	Minutes, formatted to two digits, from 00 through 59	00, 14, 57
+h	Hour, from 1 through 12	1, 8, 12
+hh	Hour, formatted to two digits, from 01 through 12	01, 08, 12
+H	Hour in 24H time, from 0 through 23	0, 8, 16
+HH	Hour in 24H time, formatted to two digits, from 0 through 23	00, 08, 16
+
+Common formatting attributes:
+ 
+Format	Description	Example
+'T'	Commonly used to delimit Date and Time, ' escapes text between it	yyyy-MM-dd'T'HH:mm:ss
+2015-10-01T12:15:58
+Z	Timezone offset from UTC-0:00 formatted without colon	HH:mm:ssZ
+12:15:58-0500
+ZZ	Timezone offset from UTC-0:00 formatted with colon	HH:mm:ssZZ
+12:15:58-05:00
+'Z'	converts to UTC time (UTC-0:00)	HH:mm:ss'Z'
+17:15:58Z
+z	Time Zone; zzzz gives full time zone e.g. Eastern Daylight Time	EDT, PDT
+
+Some example formats for October 1st, 2015 at 03:15:35.775pm (UTC-5:00):
+ 
+Format	Result
+MMddyyyy	10012015
+MM/dd/yyyy	10/01/2015
+MM-dd-yyyy	10-01-2015
+hh 'o''clock' a, zzzz	03 o'clock PM, Pacific Daylight Time
+yyyyMMdd HHmmss	20151001 151535
+yyyyMMdd HHmmss.SSS	20151001 151535.775
+yyyy-MM-dd	2015-10-01
+yyyy-MM-dd'T'HH:mm:ss	2015-10-01T15:15:35
+yyyy-MM-dd'T'HH:mm:ssZ	2015-10-01T15:15:35-0500
+yyyy-MM-dd'T'HH:mm:ss.SSS	2015-10-01T15:15:35.775
+yyyy-MM-dd'T'HH:mm:ss.SSS'Z'	2015-10-01T20:15:35.775Z
+yyyy-MM-dd'T'HH:mm:ss.SSSZZ	2015-10-01T15:15:35.775-05:00
+
+You can make your own date/time format using any combination of the syntax.
+
+Note:The platform has an internal date/time format used in the map: yyyyMMdd HHmmss.SSS (e.g. 20190501 105321.941). If you want to use the current date and convert it to another date format, your input date mask needs to be yyyyMMdd HHmmss.SSS. If you get errors related to the date/time formatting, it is often because your input doesn't match the formatting, check your formatting again.
