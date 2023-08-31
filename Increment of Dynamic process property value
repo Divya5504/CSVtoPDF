@@ -1,0 +1,3 @@
+Increment of Dynamic process property value
+
+I have stored a static value 1 in a dynamic process property "Counter". I want to increment the value of this counter by 1. What should I do?
