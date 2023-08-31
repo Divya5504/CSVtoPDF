@@ -1,0 +1,44 @@
+MPORTANT: This script only works with Java 8 onward. It is not for Java 7.
+Description of the issue
+Datetime fields may need to be converted from one timezone to another. For example, the Get Current Date function returns a time in the atom time zone.
+Solution
+Create a new Scripting component of Groovy 2.4 type with three inputs:
+inputTime (Character)
+dateFormat (Character)
+targetTimezone (Character)
+And one output:
+outputTime
+
+Type in the following script:
+import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+
+if (inputTime) {
+    def formatter = DateTimeFormatter.ofPattern(dateFormat)
+    def defaultTzTime = null
+    if (dateFormat =~ "[^']Z") {
+        defaultTzTime = ZonedDateTime.parse(inputTime, formatter)
+    }
+    else {
+        def localTz = ZoneId.systemDefault()
+        defaultTzTime = LocalDateTime.parse(inputTime, formatter).atZone(localTz)
+    }
+    def targetTzTime = defaultTzTime.withZoneSameInstant(ZoneId.of(targetTimezone))
+    outputTime = formatter.format(targetTzTime)
+}
+
+For each date that needs to be converted, add a Custom Scripting function to the map with the above scripting component.
+
+Create scripting function
+
+Set the date format in the default value for dateFormat, for example "yyyy-MM-dd'T'HH:mm:ss'Z'".
+Set the desired timezone in the default value for targetTimezone, for example "Europe/London" or "America/New_York".
+
+Set defaults
+
+Map the input date to inputTime and map outputTime to the output date.
+
+Mappings
+
